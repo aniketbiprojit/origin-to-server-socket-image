@@ -13,11 +13,13 @@ type webcam_type = {
 
 const WebCamComponent = (props: webcam_type) => {
 	const webcamRef: React.RefObject<Webcam> = React.useRef(null)
+
 	const capture = React.useCallback(() => {
 		if (webcamRef) {
-			const imageSrc = webcamRef.current?.getScreenshot()
 			const interval = setInterval(() => {
-				// eslint-disable-next-line
+				//
+				let imageSrc = webcamRef.current?.getScreenshot()
+
 				props.updatedScreenshot(imageSrc as string)
 			}, 500)
 			setTimeout(() => {
@@ -75,7 +77,7 @@ class App extends React.Component<
 			multiplier: 1,
 		})
 
-		console.log('loaded', this.net)
+		// console.log('loaded', this.net)
 		this.setState({ loaded_model: true })
 		console.timeEnd('in')
 		// net.estimateSinglePose()
@@ -93,6 +95,7 @@ class App extends React.Component<
 	updatedScreenshot(data: string) {
 		// console.log(data, 'data')
 		if (this.state.loaded_model === false) {
+			// this.setState({ loaded_model: true })
 			const date_id = new Date()
 			const uid = require('uuid').v4()
 			const ids: IIds = this.state.ids
@@ -127,6 +130,7 @@ class App extends React.Component<
 			ids[uid as string] = ''
 
 			this.setState({ ids })
+			console.log(net)
 		}
 	}
 
@@ -141,7 +145,7 @@ class App extends React.Component<
 				<br />
 				<div className='' style={{ width: '500px' }}>
 					{this.state.loaded_model === false ? <div className=''>Loading Model</div> : <div className=''>Model Loaded</div>}
-					<pre>{JSON.stringify(this.state)}</pre>
+					<pre>{JSON.stringify(this.state, undefined, 8)}</pre>
 				</div>
 			</div>
 		)
