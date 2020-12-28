@@ -9,7 +9,7 @@ import AppModelOnly from './scripts/AppModelOnly'
 
 ReactDOM.render(
 	<React.StrictMode>
-		<AppModelOnly />
+		<App />
 	</React.StrictMode>,
 	document.getElementById('root')
 )
