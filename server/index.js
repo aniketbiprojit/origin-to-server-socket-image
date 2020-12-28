@@ -40,23 +40,31 @@ function save(image, uid, image_name) {
 io.on('connection', (socket) => {
 	console.log('New client connected:', socket.id)
 
-	socket.on('ImageByClient', (data) => {
+	socket.on('ImageByClient', async (data) => {
 		const username = data['username']
 		const filename = save(data['buffer'], username, data['image_name'])
 
-		const pyprocess = spawn('python3', ['./run.py', filename])
+		// const pyprocess = spawn('python3', ['./run.py', filename])
 
-		pyprocess.stdout.on('data', function (recv) {
-			io.to(socket.id).emit('ProcessedData', {
-				filename: `http://localhost:8080/cdn/${username}/${recv.toString()}`,
-				uid: data['uid'],
-			})
+		// pyprocess.stdout.on('data', async (recv) => {
+		const data_to_send = await tryModel(`./uploads/${username}/${filename}`)
+		io.to(socket.id).emit('ProcessedData', {
+			filename: data_to_send,
+			uid: data['uid'],
 		})
+		// })
 	})
 
 	socket.on('disconnect', () => {
 		console.log('Client disconnected', socket.id)
 	})
+})
+
+const tryModel = require('./posenet/index')
+
+app.get('/try', async (req, res) => {
+	// console.log(tryModel)
+	res.send(await tryModel('/home/aniket/Work/m/server/uploads/username/2020-12-28T18:34:17.721Z.jpg'))
 })
 
 server.listen(8080, () => {

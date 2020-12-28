@@ -1,18 +1,24 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "serve-index": "^1.9.1",
-    "socket.io": "^3.0.4"
-  }
+	"name": "server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@tensorflow-models/posenet": "^1.0.3",
+		"@tensorflow/tfjs": "^1.1.2",
+		"@tensorflow/tfjs-node": "^1.1.2",
+		"botkit": "^4.0.2",
+		"canvas": "^2.5.0",
+		"rollup": "^1.13.1",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"serve-index": "^1.9.1",
+		"socket.io": "^3.0.4"
+	}
 }
