@@ -100,11 +100,6 @@ class AppModelOnly extends React.Component<
 		console.log('dafafd')
 		console.timeEnd('mobilenet loaded')
 		this.load_model()
-		// this.socket = socketIOClient(url)
-
-		// this.socket.on('processed_data', (data: any) => {
-		// 	console.log(data)
-		// })
 	}
 
 	async updatedScreenshot(data: string) {
@@ -120,9 +115,9 @@ class AppModelOnly extends React.Component<
 		const canvas = document.createElement('canvas')
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 		ctx.drawImage(img, 0, 0)
-		// const input = browser.fromPixels(canvas)
+
+		/** PoseNet logic. */
 		console.log(net)
-		// console.log(await net?.estimateSinglePose(input))
 	}
 
 	render() {
