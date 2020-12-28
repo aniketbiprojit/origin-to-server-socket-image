@@ -1,0 +1,15 @@
+ResNet50 -> 70MB
+MobileNetV1 -> 7MB
+
+Fibre Optics
+mobilenet loaded: 8602.43603515625 ms -> 8 seconds
+
+resnet loaded: 95312.4697265625 ms - > 95 seconds
+4G
+mobilenet loaded: 17265.43603515625 ms -> 17 seconds
+
+resnet approx: 170 seconds
+FAST 3G
+mobilenet loaded: 33444.10986328125 ms -> 33s
+
+resnet approx: 330 seconds
