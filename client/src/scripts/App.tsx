@@ -4,6 +4,7 @@ import '../styles/App.scss'
 
 import socketIOClient from 'socket.io-client'
 
+import * as posenet from '@tensorflow-models/posenet'
 export const url = 'http://localhost:8080/'
 
 type webcam_type = {
@@ -11,7 +12,6 @@ type webcam_type = {
 }
 
 const WebCamComponent = (props: webcam_type) => {
-	// useCallback(() => {}, [])
 	const webcamRef: React.RefObject<Webcam> = React.useRef(null)
 	const capture = React.useCallback(() => {
 		if (webcamRef) {
@@ -48,15 +48,41 @@ class App extends React.Component<
 	{
 		ids: IIds
 		latest_image: string
+		loaded_model: boolean
 	}
 > {
 	private socket: SocketIOClient.Socket | undefined
 	state = {
 		ids: {},
 		latest_image: '',
+		loaded_model: false,
+	}
+
+	private net: posenet.PoseNet | undefined
+	async load_model() {
+		console.time('in')
+		// const net = await posenet.load({
+		// 	architecture: 'MobileNetV1',
+		// 	outputStride: 16,
+		// 	inputResolution: { width: 640, height: 480 },
+		// 	multiplier: 0.75,
+		// })
+
+		this.net = await posenet.load({
+			architecture: 'ResNet50',
+			outputStride: 16,
+			inputResolution: { width: 640, height: 480 },
+			multiplier: 1,
+		})
+
+		console.log('loaded', this.net)
+		this.setState({ loaded_model: true })
+		console.timeEnd('in')
+		// net.estimateSinglePose()
 	}
 
 	componentDidMount() {
+		this.load_model()
 		this.socket = socketIOClient(url)
 
 		this.socket.on('processed_data', (data: any) => {
@@ -65,30 +91,43 @@ class App extends React.Component<
 	}
 
 	updatedScreenshot(data: string) {
-		const date_id = new Date()
-		const uid = require('uuid').v4()
-		const ids: IIds = this.state.ids
-
-		ids[uid as string] = ''
-
-		this.setState({ ids })
-
-		this.socket?.emit('ImageByClient', {
-			buffer: data,
-			username: 'username',
-			image_name: date_id,
-			uid: uid,
-		})
-
-		this.socket?.on('ProcessedData', (data: any) => {
+		// console.log(data, 'data')
+		if (this.state.loaded_model === false) {
+			const date_id = new Date()
+			const uid = require('uuid').v4()
 			const ids: IIds = this.state.ids
-			ids[data['uid']] = data['filename']
-			const latest_image = data['filename']
-			this.setState({ ids, latest_image }, () => {
-				// console.log('file:///this.state.latest_image')
-				this.forceUpdate()
+
+			ids[uid as string] = ''
+
+			this.setState({ ids })
+
+			this.socket?.emit('ImageByClient', {
+				buffer: data,
+				username: 'username',
+				image_name: date_id,
+				uid: uid,
 			})
-		})
+
+			this.socket?.on('ProcessedData', (data: any) => {
+				const ids: IIds = this.state.ids
+				ids[data['uid']] = data['filename']
+				const latest_image = data['filename']
+				this.setState({ ids, latest_image }, () => {
+					// console.log('file:///this.state.latest_image')
+					this.forceUpdate()
+				})
+			})
+		} else {
+			// const date_id = new Date()
+			const net = this.net
+
+			const uid = require('uuid').v4()
+			const ids: IIds = this.state.ids
+
+			ids[uid as string] = ''
+
+			this.setState({ ids })
+		}
 	}
 
 	render() {
@@ -101,7 +140,8 @@ class App extends React.Component<
 				/>
 				<br />
 				<div className='' style={{ width: '500px' }}>
-					<pre>{JSON.stringify(this.state, undefined, 4)}</pre>
+					{this.state.loaded_model === false ? <div className=''>Loading Model</div> : <div className=''>Model Loaded</div>}
+					<pre>{JSON.stringify(this.state)}</pre>
 				</div>
 			</div>
 		)
