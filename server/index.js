@@ -5,7 +5,7 @@ const port = process.env.PORT || 8080
 
 const spawn = require('child_process').spawn
 
-// const { queue } = require('./build/index')
+//const { queue } = require('./build/index')
 
 //const q = new queue()
 
@@ -69,6 +69,6 @@ app.get('/try', async (req, res) => {
 	res.send(await tryModel('/home/aniket/Work/m/server/uploads/username/2020-12-28T18:34:17.721Z.jpg'))
 })
 
-server.listen(8080, () => {
-	console.log(8080)
+server.listen(8081, () => {
+	console.log(8081)
 })
