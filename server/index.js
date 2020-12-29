@@ -69,6 +69,6 @@ app.get('/try', async (req, res) => {
 	res.send(await tryModel('/home/aniket/Work/m/server/uploads/username/2020-12-28T18:34:17.721Z.jpg'))
 })
 
-server.listen(8081, () => {
-	console.log(8081)
+server.listen(8080, () => {
+	console.log(8080)
 })
